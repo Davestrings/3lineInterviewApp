@@ -42,20 +42,11 @@ public class cardController {
         try{
             hash = generateHash(timestamp, key);
             log.info("hash  +++++==================> " + hash);
-//            builder.append("3line ");
-//            builder.append(hash);
-//            hashed = builder.toString();
-//            if (hashed.substring(6).equals(hash))
-//                log.info("equal=================================================================>");
-//            String hash2 = generateHash2(timestamp, key);
-//            log.info("hash  +++++==================> " + hash2);
-//            builder2.append("3line ");
-//            builder2.append(hash2);
 
         }catch(NoSuchAlgorithmException ex){
             log.error(ex.getMessage());
         }
-        if(auth.startsWith("3line")){
+        if(StringUtils.hasText(auth) && auth.startsWith("3line")){
             hashed = auth.substring(6);
             if(!hashed.equals(hash)) {
                 response.put("success", false);
@@ -72,7 +63,7 @@ public class cardController {
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }else{
             response.put("success", false);
-            response.put("message", "invalid auth token");
+            response.put("message", "invalid header parameters");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
 
