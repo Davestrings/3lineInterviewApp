@@ -57,7 +57,7 @@ public class cardController {
         }
         if(auth.startsWith("3line")){
             hashed = auth.substring(6);
-            if(hashed.equals(hash)) {
+            if(!hashed.equals(hash)) {
                 response.put("success", false);
                 response.put("message", "invalid auth token");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
