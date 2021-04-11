@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.util.StringUtils;
 
@@ -33,15 +34,11 @@ public class cardController {
         String auth = request.getHeader("authorization");
         String timestamp = request.getHeader("timestamp");
 
-        log.info("value  +++++==================> " + key);
-        log.info("value  +++++==================> " + auth);
-        log.info("value  +++++==================> " + timestamp);
         String hash = "";
         String hashed = "";
-//        StringBuilder builder = new StringBuilder();
+
         try{
             hash = generateHash(timestamp, key);
-            log.info("hash  +++++==================> " + hash);
 
         }catch(NoSuchAlgorithmException ex){
             log.error(ex.getMessage());
@@ -53,11 +50,16 @@ public class cardController {
                 response.put("message", "invalid auth token");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
             }
-
-            Object object =  restTemplate.getForObject(url + cardNumber, Object.class);
-
-            response.put("success", true);
-            response.put("payload", object);
+            try {
+                Object object = restTemplate.getForObject(url + cardNumber, Object.class);
+                response.put("success", true);
+                response.put("payload", object);
+            }catch(RestClientException ex){
+                log.warn(ex.getMessage());
+                response.put("success", false);
+                response.put("message", ex.getMessage());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
 
 
             return ResponseEntity.status(HttpStatus.OK).body(response);
