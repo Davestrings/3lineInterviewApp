@@ -1,7 +1,10 @@
 package com.example.demo.service;
 
+import java.util.Map;
+
 public interface MetricService {
-    public void increaseCount(String request, int status);
-    public void cardMetric(String cardNumber);
-    public String extractCardNumber(String uri);
+    void increaseCount(String request, int status);
+    void cardMetric(String cardNumber);
+    String extractCardNumber(String uri);
+    Map<String, Integer> getMetric();
 }

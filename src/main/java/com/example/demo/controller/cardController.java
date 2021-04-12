@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.service.MetricService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,9 @@ public class cardController {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private MetricService metricService;
 
     private static String url = "https://lookup.binlist.net/";
 
@@ -116,5 +120,12 @@ public class cardController {
         }
     }
 
+    @GetMapping("/stats")
+    public ResponseEntity<?> getStatistics(@RequestParam("start") String start, @RequestParam("limit") String limit){
+       Map<String, Integer> reponse =  metricService.getMetric();
+        log.info(" pleading for " + start);
+        log.info(" pleading for " + limit);
+        return ResponseEntity.status(HttpStatus.OK).body(reponse);
+    }
 
 }
